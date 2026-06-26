@@ -23,7 +23,7 @@ $primary: yellow;
 $grey-dark: $brown;
 $grey-light: $beige-light;
 $tooltip-background-color: #757763;
-$tooltip-color: #FFFFFF;
+$tooltip-color: hsl(221, 14%, 100%);
 // $primary: $purple;
 // $link: $pink;
 // $widescreen-enabled: true;
@@ -39,6 +39,9 @@ $card-header-shadow: none;
 $card-content-padding: 0.5rem;
 
 $panel-heading-background-color: yellow !default;
+
+$family-primary: "Inter", "SF Pro", "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+  "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 
 @import "~bulma/bulma";
 @import '~@creativebulma/bulma-tooltip/src/sass/index.sass';
