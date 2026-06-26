@@ -166,16 +166,17 @@ hr.history-separator {
   }
   // Colors
   @each $name, $components in sass.$panel-colors {
-    
-    $color: nth($components, 1);
-    $color-invert: nth($components, 2);
-    &.is-#{$name} {
-      .accordion-heading {
-        background-color: $color;
-        color: $color-invert;
-      }
-      .accordion-block.is-active .accordion-icon {
-        color: $color;
+    @if list.length($components) > 1 {
+      $color: nth($components, 1);
+      $color-invert: nth($components, 2);
+      &.is-#{$name} {
+        .accordion-heading {
+          background-color: $color;
+          color: $color-invert;
+        }
+        .accordion-block.is-active .accordion-icon {
+          color: $color;
+        }
       }
     }
   }
