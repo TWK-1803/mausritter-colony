@@ -39,7 +39,7 @@ $card-content-padding: 0.5rem;
 $panel-heading-background-color: yellow !default;
 
 @import "~bulma/bulma";
-@import '~bulma-tooltip/src/sass/index.sass';
+@import '~@creativebulma/bulma-tooltip/src/sass/index.sass';
 
 html, body {
   overflow-y: auto !important;
