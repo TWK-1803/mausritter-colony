@@ -13,7 +13,7 @@ $body-size: 13px !default;
 // Set our brand colors
 // $purple: #8A4D76;
 // $pink: #FA7C91;
-// $brown: #757763;
+$brown: #757763;
 // $beige-light: #D0D1CD;
 $beige-lighter: #EFF0EB;
 $primary: yellow;
@@ -21,7 +21,7 @@ $primary: yellow;
 // Update Bulma's global variables
 // $family-sans-serif: "Nunito", sans-serif;
 // $grey-dark: $brown;
-// $grey-light: $beige-light;
+$grey-light: $beige-light;
 // $primary: $purple;
 // $link: $pink;
 // $widescreen-enabled: true;
