@@ -189,7 +189,7 @@ hr.history-separator {
 }
 
 .accordion-heading {
-  background-color: sass.$panel-heading-background-color;
+  background-color: $panel-heading-background-color;
   border-radius: sass.$panel-radius $panel-radius 0 0;
   color: sass.$panel-heading-color;
   font-size: sass.$panel-heading-size;
