@@ -4,10 +4,10 @@
   "private": true,
   "license": "Mausritter Third Party Licence",
   "scripts": {
-    "serve": "vue-cli-service serve --port 8802",
+    "serve": "set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service serve --port 8802",
     "serve:docker": "docker run -it -p 8765:8765 mausritter-sheet",
     "serve:tauri": "tauri dev",
-    "build": "vue-cli-service build",
+    "build": "set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service build",
     "build:docker": "docker build --tag mausritter-sheet .",
     "build:tauri": "vue-cli-service build && yarn tauri build",
     "lint": "vue-cli-service lint",
