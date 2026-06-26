@@ -7772,7 +7772,6 @@ sass-loader@^10:
     neo-async "^2.6.2"
     schema-utils "^3.0.0"
     semver "^7.3.2"
-    webpack "^4.36.0"
 
 sax@~1.2.4:
   version "1.2.4"
