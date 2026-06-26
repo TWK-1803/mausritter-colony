@@ -78,7 +78,7 @@ html, body {
 
 .outlined {
   border-radius: sass.$radius;
-  border: 1px solid $dark;
+  border: 1px solid sass.$dark;
 }
 
 .filler {
