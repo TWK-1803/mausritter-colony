@@ -44,9 +44,7 @@ $card-header-shadow: none;
 $card-content-padding: 0.5rem;
 
 $panel-heading-background-color: yellow !default;
-@each $name, $components in sass.$panel-colors {
-    @error "#{nth($components, 1)}";
-}
+@error "#{sass.$panel-colors}";
 
 // $family-primary: "Inter", "SF Pro", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 
