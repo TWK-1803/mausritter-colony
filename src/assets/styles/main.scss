@@ -1,6 +1,6 @@
 @charset "utf-8";
 
-@use "~bulma/bulma" as b;
+@use "~bulma/sass";
 // @use '~@creativebulma/bulma-tooltip/src/sass/index.sass';
 
 // The container horizontal gap, which acts as the offset for breakpoints
@@ -72,12 +72,12 @@ html, body {
 
 .boxed {
   // border: 1px solid $dark;
-  border-radius: b.$radius;
+  border-radius: sass.$radius;
   background-color: $primary;
 }
 
 .outlined {
-  border-radius: b.$radius;
+  border-radius: sass.$radius;
   border: 1px solid $dark;
 }
 
@@ -157,14 +157,14 @@ hr.history-separator {
 }
 
 .accordion {
-  border-radius: b.$panel-radius;
-  box-shadow: b.$panel-shadow;
-  font-size: b.$size-normal;
+  border-radius: sass.$panel-radius;
+  box-shadow: sass.$panel-shadow;
+  font-size: sass.$size-normal;
   &:not(:last-child) {
-    margin-bottom: b.$panel-margin;
+    margin-bottom: sass.$panel-margin;
   }
   // Colors
-  @each $name, $components in b.$panel-colors {
+  @each $name, $components in sass.$panel-colors {
     $color: nth($components, 1);
     $color-invert: nth($components, 2);
     &.is-#{$name} {
@@ -181,18 +181,18 @@ hr.history-separator {
 
 .accordion-block {
   &:not(:last-child) {
-    border-bottom: b.$panel-item-border;
+    border-bottom: sass.$panel-item-border;
   }
 }
 
 .accordion-heading {
-  background-color: b.$panel-heading-background-color;
-  border-radius: b.$panel-radius $panel-radius 0 0;
-  color: b.$panel-heading-color;
-  font-size: b.$panel-heading-size;
-  font-weight: b.$panel-heading-weight;
-  line-height: b.$panel-heading-line-height;
-  padding: b.$panel-heading-padding;
+  background-color: sass.$panel-heading-background-color;
+  border-radius: sass.$panel-radius $panel-radius 0 0;
+  color: sass.$panel-heading-color;
+  font-size: sass.$panel-heading-size;
+  font-weight: sass.$panel-heading-weight;
+  line-height: sass.$panel-heading-line-height;
+  padding: sass.$panel-heading-padding;
 }
 
 .tracker th {
