@@ -41,7 +41,7 @@
     "@vue/cli-plugin-eslint": "latest",
     "@vue/cli-service": "latest",
     "babel-eslint": "latest",
-    "eslint": "^8.0.0",
+    "eslint": "latest",
     "eslint-plugin-vue": "latest",
     "sass": "latest",
     "readme-md-generator": "latest",
