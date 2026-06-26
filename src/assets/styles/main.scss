@@ -13,38 +13,38 @@ $body-size: 13px !default;
 
 // $body-size: 14px !default;
 // Set our brand colors
-// $purple: #8A4D76;
-// $pink: #FA7C91;
-// $brown: #757763;
-// $beige-light: #D0D1CD;
-// $beige-lighter: #EFF0EB;
+$purple: #8A4D76;
+$pink: #FA7C91;
+$brown: #757763;
+$beige-light: #D0D1CD;
+$beige-lighter: #EFF0EB;
 $primary: yellow;
 
 // Update Bulma's global variables
-// $family-sans-serif: "Nunito", sans-serif;
-// $grey-dark: $brown;
-// $grey-light: $beige-light;
-// $tooltip-background-color: #757763;
-// $tooltip-color: hsl(221, 14%, 100%);
-// $size-7: 0.75rem;
-// $radius-small: 0.25rem;
-// $primary: $purple;
-// $link: $pink;
-// $widescreen-enabled: true;
-// $fullhd-enabled: true;
+$family-sans-serif: "Nunito", sans-serif;
+$grey-dark: $brown;
+$grey-light: $beige-light;
+$tooltip-background-color: #757763;
+$tooltip-color: hsl(221, 14%, 100%);
+$size-7: 0.75rem;
+$radius-small: 0.25rem;
+$primary: $purple;
+$link: $pink;
+$widescreen-enabled: true;
+$fullhd-enabled: true;
 
 // Update some of Bulma's component variables
 $body-background-color: $beige-lighter;
-// $control-border-width: 2px;
-// $input-border-color: transparent;
-// $input-shadow: none;
+$control-border-width: 2px;
+$input-border-color: transparent;
+$input-shadow: none;
 $card-shadow: none;
 $card-header-shadow: none;
 $card-content-padding: 0.5rem;
 
 $panel-heading-background-color: yellow !default;
 
-// $family-primary: "Inter", "SF Pro", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+$family-primary: "Inter", "SF Pro", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 
 html, body {
   overflow-y: auto !important;
