@@ -47,6 +47,7 @@ $panel-heading-background-color: yellow !default;
 @each $name, $components in sass.$panel-colors {
     @debug "Name: #{$name}";
     @debug "Components: #{$components}";
+}
 
 // $family-primary: "Inter", "SF Pro", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 
