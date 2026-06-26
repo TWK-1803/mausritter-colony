@@ -23,7 +23,7 @@
   "dependencies": {
     "@mdi/font": "latest",
     "bulma": "latest",
-    "bulma-tooltip": "latest",
+    "@creativebulma/bulma-tooltip": "latest",
     "core-js": "latest",
     "uuencode": "latest",
     "uuid": "latest",
