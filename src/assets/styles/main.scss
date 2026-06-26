@@ -165,6 +165,7 @@ hr.history-separator {
   }
   // Colors
   @each $name, $components in sass.$panel-colors {
+    @debug "Current component is: #{$components}";
     $color: nth($components, 1);
     $color-invert: nth($components, 2);
     &.is-#{$name} {
