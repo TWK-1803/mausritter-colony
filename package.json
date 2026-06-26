@@ -38,6 +38,7 @@
     "@iconify-icons/openmoji": "latest",
     "@iconify/vue": "latest",
     "@vue/cli-plugin-babel": "latest",
+    "eslint-webpack-plugin" :"latest",
     "@vue/cli-plugin-eslint": "latest",
     "@vue/cli-service": "latest",
     "babel-eslint": "latest",
