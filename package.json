@@ -47,7 +47,8 @@
     "readme-md-generator": "latest",
     "sass-loader": "latest",
     "webpack": "latest",
-    "vue-template-compiler": "latest"
+    "vue-template-compiler": "latest",
+    "vue-eslint-parser": "latest"
   },
   "eslintConfig": {
     "root": true,
