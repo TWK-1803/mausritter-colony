@@ -1,5 +1,8 @@
 @charset "utf-8";
 
+@import "~bulma/sass/index.sass";
+@import '~@creativebulma/bulma-tooltip/src/sass/index.sass';
+
 // The container horizontal gap, which acts as the offset for breakpoints
 $gap: 32px !default;
 $tablet: 769px !default;
@@ -43,9 +46,6 @@ $card-content-padding: 0.5rem;
 $panel-heading-background-color: yellow !default;
 
 // $family-primary: "Inter", "SF Pro", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
-
-@import "~bulma/sass/index.sass";
-@import '~@creativebulma/bulma-tooltip/src/sass/index.sass';
 
 html, body {
   overflow-y: auto !important;
