@@ -1,6 +1,6 @@
 @charset "utf-8";
 
-@use "~bulma/bulma.scss";
+@use "~bulma/bulma.scss" as b;
 @use '~@creativebulma/bulma-tooltip/src/sass/index.sass';
 
 // The container horizontal gap, which acts as the offset for breakpoints
@@ -72,12 +72,12 @@ html, body {
 
 .boxed {
   // border: 1px solid $dark;
-  border-radius: $radius;
+  border-radius: b.$radius;
   background-color: $primary;
 }
 
 .outlined {
-  border-radius: $radius;
+  border-radius: b.$radius;
   border: 1px solid $dark;
 }
 
