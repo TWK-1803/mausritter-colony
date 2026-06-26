@@ -44,6 +44,7 @@ $card-header-shadow: none;
 $card-content-padding: 0.5rem;
 
 $panel-heading-background-color: yellow !default;
+@debug "Panel Colors are: #{$sass.panel-colors}";
 
 // $family-primary: "Inter", "SF Pro", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
 
@@ -165,7 +166,7 @@ hr.history-separator {
   }
   // Colors
   @each $name, $components in sass.$panel-colors {
-    @debug "Current component is: #{$components}";
+    
     $color: nth($components, 1);
     $color-invert: nth($components, 2);
     &.is-#{$name} {
