@@ -1,7 +1,7 @@
 @charset "utf-8";
 
 @use "~bulma/bulma.scss" as b;
-@use '~@creativebulma/bulma-tooltip/src/sass/index.sass';
+// @use '~@creativebulma/bulma-tooltip/src/sass/index.sass';
 
 // The container horizontal gap, which acts as the offset for breakpoints
 $gap: 32px !default;
@@ -157,14 +157,14 @@ hr.history-separator {
 }
 
 .accordion {
-  border-radius: $panel-radius;
-  box-shadow: $panel-shadow;
-  font-size: $size-normal;
+  border-radius: b.$panel-radius;
+  box-shadow: b.$panel-shadow;
+  font-size: b.$size-normal;
   &:not(:last-child) {
-    margin-bottom: $panel-margin;
+    margin-bottom: b.$panel-margin;
   }
   // Colors
-  @each $name, $components in $panel-colors {
+  @each $name, $components in b.$panel-colors {
     $color: nth($components, 1);
     $color-invert: nth($components, 2);
     &.is-#{$name} {
@@ -181,18 +181,18 @@ hr.history-separator {
 
 .accordion-block {
   &:not(:last-child) {
-    border-bottom: $panel-item-border;
+    border-bottom: b.$panel-item-border;
   }
 }
 
 .accordion-heading {
-  background-color: $panel-heading-background-color;
-  border-radius: $panel-radius $panel-radius 0 0;
-  color: $panel-heading-color;
-  font-size: $panel-heading-size;
-  font-weight: $panel-heading-weight;
-  line-height: $panel-heading-line-height;
-  padding: $panel-heading-padding;
+  background-color: b.$panel-heading-background-color;
+  border-radius: b.$panel-radius $panel-radius 0 0;
+  color: b.$panel-heading-color;
+  font-size: b.$panel-heading-size;
+  font-weight: b.$panel-heading-weight;
+  line-height: b.$panel-heading-line-height;
+  padding: b.$panel-heading-padding;
 }
 
 .tracker th {
