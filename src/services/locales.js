@@ -1,71 +1,29 @@
 import { get, set } from '@/services/storage'
 
-export const DEFAULT_LOCALE_ENGLISH = 'en-US'
-export const DEFAULT_LOCALE_FRENCH = 'fr-FR'
-export const DEFAULT_LOCALE = DEFAULT_LOCALE_ENGLISH
-export const LOCALES = [DEFAULT_LOCALE_ENGLISH, DEFAULT_LOCALE_FRENCH]
+export const LOCALES = ['en-US', 'fr-FR']
+export const DEFAULT_LOCALE = LOCALES[0]
 
 const KEY_LOCALE = 'locale'
 
-export const datetimeFormats = {
-  [DEFAULT_LOCALE_ENGLISH]: {
-    short: {
-      year: 'numeric', month: 'short', day: 'numeric'
-    },
-    long: {
-      year: 'numeric', month: 'short', day: 'numeric',
-      weekday: 'short', hour: 'numeric', minute: 'numeric'
-    }
-  },
-  [DEFAULT_LOCALE_FRENCH]: {
-    short: {
-      year: 'numeric', month: 'short', day: 'numeric'
-    },
-    long: {
-      year: 'numeric', month: 'short', day: 'numeric',
-      weekday: 'short', hour: 'numeric', minute: 'numeric'
-    }
-  }
+const DATETIME_FORMATS = {
+  short: { year: 'numeric', month: 'short', day: 'numeric' },
+  long: { year: 'numeric', month: 'short', day: 'numeric', weekday: 'short', hour: 'numeric', minute: 'numeric' }
 }
 
-export const numberFormats = {
-  [DEFAULT_LOCALE_ENGLISH]: {
-    currency: {
-      style: 'currency', currency: 'EUR', currencyDisplay: 'symbol'
-    },
-    percent: {
-      style: 'percent'
-    }
-  },
-  [DEFAULT_LOCALE_ENGLISH]: {
-    currency: {
-      style: 'currency', currency: 'EUR', currencyDisplay: 'symbol'
-    },
-    percent: {
-      style: 'percent'
-    }
-  }
+const NUMBER_FORMATS = {
+  currency: { style: 'currency', currency: 'EUR', currencyDisplay: 'symbol' },
+  percent: { style: 'percent' }
 }
+
+export const datetimeFormats = Object.fromEntries(LOCALES.map(locale => [locale, DATETIME_FORMATS]))
+export const numberFormats = Object.fromEntries(LOCALES.map(locale => [locale, NUMBER_FORMATS]))
 
 export function loadLocale () {
-  let defaultLocale = DEFAULT_LOCALE
-  if (/^en\b/.test(navigator.language)) defaultLocale = DEFAULT_LOCALE_ENGLISH
-  else if (/^fr\b/.test(navigator.language)) defaultLocale = DEFAULT_LOCALE_FRENCH
-
-  const locale = get(KEY_LOCALE, defaultLocale)
-  // Use only our locales
-  return LOCALES.includes(locale) ? locale : defaultLocale
+  const browserLocale = LOCALES.find(locale => navigator.language.startsWith(locale.slice(0, 2)))
+  const locale = get(KEY_LOCALE, browserLocale || DEFAULT_LOCALE)
+  return LOCALES.includes(locale) ? locale : DEFAULT_LOCALE
 }
 
 export function saveLocale (locale) {
   set(KEY_LOCALE, locale || DEFAULT_LOCALE)
-}
-
-export default {
-  DEFAULT_LOCALE,
-  LOCALES,
-  datetimeFormats,
-  numberFormats,
-  loadLocale,
-  saveLocale
 }

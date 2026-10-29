@@ -1,4 +1,9 @@
-import Vue from 'vue'
+import { request } from '@/services/api'
+
+const save = (tableId, data) => request(`/vtables?vtable=${tableId}`, {
+  method: 'POST',
+  body: { data: JSON.stringify(data) }
+})
 
 export default {
   namespaced: true,
@@ -7,51 +12,28 @@ export default {
     tableId: null
   },
   getters: {
-    current: state => { return state.current },
-    tableId: state => { return state.tableId }
+    current: state => state.current
   },
   actions: {
-    create ({ commit, state, rootState }, { tableId, data }) {
-      return Vue.http.post(`${rootState.config.SERVER_API_URL}/vtables.php?vtable=${tableId}`, { data: JSON.stringify(data) })
-        .then((response) => {
-          state.tableId = tableId
-          commit('setCurrent', { data })
-          return response
-        })
-        .catch((error) => {
-          commit('API_FAILURE', error)
-        })
+    async create ({ commit }, { tableId, data }) {
+      await save(tableId, data)
+      commit('setCurrent', { tableId, data })
     },
-    get ({ commit, state, rootState }, tableId) {
-      return Vue.http.get(`${rootState.config.SERVER_API_URL}/vtables.php?vtable=${tableId}`)
-        .then((response) => {
-          state.tableId = tableId
-          commit('setCurrent', { data: response?.body?.data })
-          return response
-        })
-        .catch((error) => {
-          commit('API_FAILURE', error)
-        })
+    async get ({ commit }, tableId) {
+      const body = await request(`/vtables?vtable=${tableId}`)
+      commit('setCurrent', { tableId, data: body?.data })
     },
-    update ({ commit, state, rootState }, { data }) {
-      return Vue.http.post(`${rootState.config.SERVER_API_URL}/vtables.php?vtable=${state.tableId}`, { data: JSON.stringify(data) })
-        .then((response) => {
-          commit('setCurrent', { data })
-          return response
-        })
-        .catch((error) => {
-          commit('API_FAILURE', error)
-        })
+    async update ({ commit, state }, { data }) {
+      await save(state.tableId, data)
+      commit('setCurrent', { tableId: state.tableId, data })
     }
   },
   mutations: {
-    API_FAILURE: (error) => {
-      throw error
-    },
-    setCurrent (state, { data }) {
+    setCurrent (state, { tableId, data }) {
+      state.tableId = tableId
       try {
-        state.current = JSON.parse(data)
-      } catch (error) {
+        state.current = typeof data === 'string' ? JSON.parse(data) : data
+      } catch {
         state.current = null
       }
     }

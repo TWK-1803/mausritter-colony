@@ -21,7 +21,7 @@
           <span class="is-italic">{{ advantageText(line._json) }}</span>
         </div>
       </div>
-      <hr class="history-separator" />
+      <hr class="history-separator">
     </div>
   </div>
 </template>
@@ -32,7 +32,6 @@ export default {
   props: {
     value: { type: Array, required: true }
   },
-  data: () => ({}),
   computed: {
     locale () { return this.$store.getters['locale'] }
   },
@@ -44,7 +43,7 @@ export default {
     },
     cls (roll) {
       if (roll.success) return 'px-2 has-background-success has-text-light'
-      else if (roll.failed) return 'px-2 has-background-danger has-text-light'
+      if (roll.failed) return 'px-2 has-background-danger has-text-light'
       return 'px-2 boxed'
     },
     explain (diceResult) {
@@ -54,20 +53,18 @@ export default {
       } else if (diceResult.upper) {
         result = this.$t('Need {score} or upper.', { score: diceResult.upper })
       }
-
       if (diceResult.dices && diceResult.dices.length > 1) {
-        result += ' (' + diceResult.dices.join(', ') + ')'
+        result += ` (${diceResult.dices.join(', ')})`
       }
-
       return result
     },
     header (roll) {
       return roll.vtable === roll.sheet ? this.$t('GM') : roll.sheet
     },
     resume (roll) {
-      let result = roll.context ? roll.context + ' → ' : ''
-      result += (roll.dices ? roll.dices.length : '') + (roll.faces ? 'D' + roll.faces + ' ' : '')
-      return result.trim()
+      const context = roll.context ? `${roll.context} → ` : ''
+      const dice = (roll.dices ? roll.dices.length : '') + (roll.faces ? `D${roll.faces}` : '')
+      return context + dice
     }
   }
 }

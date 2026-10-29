@@ -1,4 +1,7 @@
+import enUS from './en-US.json'
+import frFR from './fr-FR.json'
+
 export default {
-  'en-US': require('./en-US.json'),
-  'fr-FR': require('./fr-FR.json')
+  'en-US': enUS,
+  'fr-FR': frFR
 }

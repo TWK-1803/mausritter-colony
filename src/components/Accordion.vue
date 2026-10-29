@@ -1,8 +1,8 @@
 <template>
   <div class="accordion is-flex is-flex-direction-column">
     <div class="accordion-heading is-flex is-flex-direction-row is-justify-content-space-between vertical-align">
-      <div class="is-clickable vertical-align" @click="toggle">
-        <mc-icon icon="expand" height="24" :class="expanded ? 'rotate-once-180 mr-2' : 'mr-2'" />
+      <div class="is-clickable vertical-align" @click="expanded = !expanded">
+        <mc-icon icon="expand" height="24" class="mr-2" :class="{ 'rotate-once-180': expanded }" />
         <slot name="header" />
       </div>
 
@@ -18,12 +18,9 @@
 <script>
 export default {
   name: 'Accordion',
-  data: () => ({
-    expanded: true
-  }),
-  methods: {
-    toggle () {
-      this.expanded = !this.expanded
+  data () {
+    return {
+      expanded: true
     }
   }
 }

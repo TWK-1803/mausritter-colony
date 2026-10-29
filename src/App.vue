@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div id="app" class="application-background">
     <div id="dice-canvas" class="dice3d-canvas" />
 
@@ -14,12 +14,16 @@
         <span v-show="locale !== lang">{{ $t(lang) }}</span>
       </button>
 
+      <button class="button is-small mr-2" :title="$t('Toggle dark mode')" @click="toggleTheme">
+        <mc-icon :icon="theme === 'dark' ? 'sun' : 'moon'" height="24" />
+      </button>
+
       <a href="https://mausritter-sheet.dco.ninja" target="_blank">
         Mausritter-Sheet
       </a>
 
       <div class="is-flex is-flex-grow-1 is-justify-content-flex-end">
-        <img :src="require('@/assets/img/compatible-with-mausritter-88x32.png')" contain class="is-clickable" @click="showAbout = true" />
+        <img src="@/assets/img/compatible-with-mausritter-88x32.png" contain class="is-clickable" @click="showAbout = true" />
       </div>
     </div>
 
@@ -32,126 +36,140 @@
 
         <div class="is-flex is-flex-direction-column">
           <accordion class="table-background">
-            <template slot="header">
+            <template #header>
               {{ $t('Table') }}
             </template>
 
-            <div slot="content" class="m-1">
-              <div class="p-2 has-text-weight-normal">
-                <p class="is-size-5 has-text-weight-bold">{{ $t('Welcome') }}</p>
+            <template #content>
+              <div class="m-1">
+                <div class="p-2 has-text-weight-normal">
+                  <p class="is-size-5 has-text-weight-bold">{{ $t('Welcome') }}</p>
 
-                <div class="notification background-white-50">
-                  <p>{{ $t('Mausritter-Colony is a very simple tool that will help you, the GM, to manage a Mausritter adventure. All data older than 3 months will be deleted.') }}</p>
-                  <p class="has-text-weight-bold">{{ $t('Mausritter-Colony is not a virtual tabletop. You will have to manually refresh the mice list and the dices history.') }}</p>
+                  <div class="notification background-white-50">
+                    <p>{{ $t('Mausritter-Colony is a very simple tool that will help you, the GM, to manage a Mausritter adventure. All data older than 3 months will be deleted.') }}</p>
+                    <p class="has-text-weight-bold">{{ $t('Mausritter-Colony is not a virtual tabletop. You will have to manually refresh the mice list and the dices history.') }}</p>
 
-                  <div class="mt-2">
-                    <hr>
-                    <span class="subtitle">{{ $t('To begin to play:') }}</span>
-                    <div>
-                      <span class="subtitle">1 <mc-icon icon="arrow-right" /></span>
-                      {{ $t('Tell your player to create/load their mouse on') }} <a target="mausritter-sheet" href="https://mausritter-sheet.dco.ninja/">Mausritter Sheet</a>. {{ $t('At the top of the sheet, a table ID can be input.') }}
-                      <img class="ml-4" :src="require('@/assets/img/table-id-input.png')" contain />
-                    </div>
-                    <div>
-                      <span class="subtitle">2 <mc-icon icon="arrow-right" /></span>
-                      {{ $t('Share this table ID with your players:') }}
-                      <span class="is-family-monospace has-text-weight-bold is-size-5 is-clickable ml-1" @click="copyToClipboard" :data-tooltip="$t('Click to copy to clipboard')">
-                        {{ vtable }}
-                        <mc-icon is-button icon="copy" class="ml-1" />
-                      </span>
-                      <div v-show="showNotifications" class="notification is-info is-light">
-                        <button class="delete" @click="showNotifications = false" />
-                        {{ $t('{name} is now copied to clipboard.', { name: vtable }) }}
+                    <div class="mt-2">
+                      <hr>
+                      <span class="subtitle">{{ $t('To begin to play:') }}</span>
+                      <div>
+                        <span class="subtitle">1 <mc-icon icon="arrow-right" /></span>
+                        {{ $t('Tell your player to create/load their mouse on') }} <a target="mausritter-sheet" href="https://mausritter-sheet.dco.ninja/">Mausritter Sheet</a>. {{ $t('At the top of the sheet, a table ID can be input.') }}
+                        <img class="ml-4" src="@/assets/img/table-id-input.png" contain />
+                      </div>
+                      <div>
+                        <span class="subtitle">2 <mc-icon icon="arrow-right" /></span>
+                        {{ $t('Share this table ID with your players:') }}
+                        <span class="is-family-monospace has-text-weight-bold is-size-5 is-clickable ml-1" @click="copyToClipboard" :data-tooltip="$t('Click to copy to clipboard')">
+                          {{ vtable }}
+                          <mc-icon is-button icon="copy" class="ml-1" />
+                        </span>
+                        <div v-show="showNotifications" class="notification is-info is-light">
+                          <button class="delete" @click="showNotifications = false" />
+                          {{ $t('{name} is now copied to clipboard.', { name: vtable }) }}
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </template>
           </accordion>
 
           <accordion class="table-background">
-            <template slot="header">
+            <template #header>
               {{ $t('Turn tracker') }}
             </template>
 
-            <template slot="header-append">
+            <template #header-append>
               <mc-icon is-button icon="help" height="24" @click="showHelp = !showHelp" />
             </template>
 
-            <div slot="content" class="m-1">
-              <div v-show="showNotifications" class="notification is-info is-light">
-                <button class="delete" @click="showNotifications = false" />
-                {{ $t('{name} is now copied to clipboard.', { name: vtable }) }}
-              </div>
-
-              <div>
-                <tracker ref="turn-tracker" />
-              </div>
-
-              <transition name="fade">
-                <div v-if="showHelp" class="m-2 mt-4 notification background-white-50 is-flex is-flex-wrap-wrap">
-                  <button class="delete" @click="showHelp = false" />
-
-                  <div>
-                    <p >{{ $t('Click on a box to change its content.') }}</p>
-                    <p class="is-align-items-center is-flex">
-                      <mc-icon icon="light" height="20" class="mr-1" />
-                      {{ $t('A turn using lighting with a torch or a lantern.') }}
-                    </p>
-                    <p class="is-align-items-center is-flex">
-                      <mc-icon icon="paws" height="20" class="mr-1" />
-                      {{ $t('A turn walking.') }}
-                    </p>
-                    <p class="is-align-items-center is-flex">
-                      <mc-icon icon="food" height="20" class="mr-1" />
-                      {{ $t('A turn to rest and eat.') }}
-                    </p>
-                  </div>
-
-                  <div class="mx-4">
-                    {{ $t('In a dungeon, roll d6 for encounter every three turns.') }}
-                    <p>
-                      {{ $t('1: Encounter, 2: Omen of encounter. Roll for type.') }}
-                    </p>
-                  </div>
-
-                  <div>
-                    {{ $t('In the wilderness, roll d6 for encounter at Sunrise and Sunset.') }}
-                    <p>
-                      {{ $t('If an encounter or omen is rolled, roll d12 to find the hour.') }}
-                    </p>
-                  </div>
+            <template #content>
+              <div class="m-1">
+                <div v-show="showNotifications" class="notification is-info is-light">
+                  <button class="delete" @click="showNotifications = false" />
+                  {{ $t('{name} is now copied to clipboard.', { name: vtable }) }}
                 </div>
-              </transition>
-            </div>
+
+                <div>
+                  <tracker ref="turn-tracker" />
+                </div>
+
+                <transition name="fade">
+                  <div v-if="showHelp" class="m-2 mt-4 notification background-white-50 is-flex is-flex-wrap-wrap">
+                    <button class="delete" @click="showHelp = false" />
+
+                    <div>
+                      <p>{{ $t('Click on a box to change its content.') }}</p>
+                      <p class="is-align-items-center is-flex">
+                        <mc-icon icon="light" height="20" class="mr-1" />
+                        {{ $t('A turn using lighting with a torch or a lantern.') }}
+                      </p>
+                      <p class="is-align-items-center is-flex">
+                        <mc-icon icon="paws" height="20" class="mr-1" />
+                        {{ $t('A turn walking.') }}
+                      </p>
+                      <p class="is-align-items-center is-flex">
+                        <mc-icon icon="food" height="20" class="mr-1" />
+                        {{ $t('A turn to rest and eat.') }}
+                      </p>
+                    </div>
+
+                    <div class="mx-4">
+                      {{ $t('In a dungeon, roll d6 for encounter every three turns.') }}
+                      <p>
+                        {{ $t('1: Encounter, 2: Omen of encounter. Roll for type.') }}
+                      </p>
+                    </div>
+
+                    <div>
+                      {{ $t('In the wilderness, roll d6 for encounter at Sunrise and Sunset.') }}
+                      <p>
+                        {{ $t('If an encounter or omen is rolled, roll d12 to find the hour.') }}
+                      </p>
+                    </div>
+                  </div>
+                </transition>
+              </div>
+            </template>
           </accordion>
 
           <accordion class="table-background">
-            <template slot="header">
+            <template #header>
+              {{ $t('Encounter') }}
+            </template>
+
+            <template #content>
+              <encounter />
+            </template>
+          </accordion>
+
+          <accordion class="table-background">
+            <template #header>
               {{ $t('Mice') }} <span class="ml-2 tag is-rounded is-dark">{{ sheets.length }}</span>
             </template>
 
-            <template slot="header-append">
+            <template #header-append>
               <mc-icon v-if="vtable" is-button icon="refresh" height="24" :class="isLoadingMice ? 'rotate' : ''" @click="refreshMice" />
             </template>
 
-            <div slot="content">
+            <template #content>
               <div v-if="vtable" class="is-flex is-flex-wrap-wrap">
                 <div v-if="sheets.length === 0" class="is-size-5 has-text-weight-bold m-4">
                   {{ $t('No player is connected. Refresh this panel with the double round arrows in its title:') }}
                   <mc-icon is-button icon="refresh" height="24" @click="refreshMice" />
                 </div>
                 <div v-else v-for="(sheet, index) in sheets" :key="index" class="p-2">
-                  <sheet :level="sheet.level" :dex="sheet.dex" :dex_max="sheet.dex_max" :hp="sheet.hp" :hp_max="sheet.hp_max" :last-update="sheet.updated" :name="sheet.name" :str="sheet.str"  :str_max="sheet.str_max" :wil="sheet.wil" :wil_max="sheet.wil_max" @remove="removeSheet" />
+                  <sheet :level="sheet.level" :dex="sheet.dex" :dex_max="sheet.dex_max" :hp="sheet.hp" :hp_max="sheet.hp_max" :last-update="sheet.updated" :name="sheet.name" :str="sheet.str" :str_max="sheet.str_max" :wil="sheet.wil" :wil_max="sheet.wil_max" @remove="removeSheet" />
                 </div>
               </div>
-            </div>
+            </template>
           </accordion>
         </div>
       </div>
 
-      <div class="column" :style="historyStyle">
+      <div class="column">
         <div class="panel">
           <div class="panel-heading is-flex is-flex-direction-row is-justify-content-space-between">
             Dices
@@ -195,44 +213,44 @@
 </template>
 
 <script>
-import { v4 as uuidv4, v5 as uuidv5 } from 'uuid';
-import { LOCALES, DEFAULT_LOCALE, loadLocale, saveLocale } from '@/services/locales'
+import { v4 as uuidv4, v5 as uuidv5 } from 'uuid'
+import About from '@/components/About.vue'
+import Accordion from '@/components/Accordion.vue'
+import Dice from '@/components/Dice.vue'
+import Encounter from '@/components/Encounter.vue'
+import History from '@/components/History.vue'
+import Sheet from '@/components/Sheet.vue'
+import Tracker from '@/components/Tracker.vue'
 import { copyToClipboard } from '@/services/clipboard'
 import { PREF_VTABLE_ID } from '@/services/defines'
-import dices3D from '@/services/dice3d'
-import Dice from '@/components/Dice.vue'
-import Sheet from './components/Sheet.vue'
-import Tracker from './components/Tracker.vue'
-import History from './components/History.vue'
-import Accordion from './components/Accordion.vue'
-import About from './components/About.vue'
+import { initialize as initializeDice } from '@/services/dice3d'
+import { DEFAULT_LOCALE, LOCALES, loadLocale, saveLocale } from '@/services/locales'
+import { applyTheme, loadTheme, saveTheme, THEME_DARK, THEME_LIGHT } from '@/services/theme'
 
 const DICE_FACES = [4, 6, 8, 10, 12, 20]
+const MIN_LOADING_MS = 500
 
 export default {
   name: 'App',
-  components: { About, Sheet, Tracker, History, Accordion, Dice },
+  components: { About, Accordion, Dice, Encounter, History, Sheet, Tracker },
   data () {
     return {
-      DEFAULT_LOCALE,
       DICE_FACES,
       LOCALES,
       diceAdvantage: '',
       error: null,
-      expandTurnTracker: true,
       isLoadingHistory: false,
       isLoadingMice: false,
       locale: null,
       showAbout: false,
       showHelp: true,
       showNotifications: false,
-      window
+      theme: THEME_LIGHT
     }
   },
   computed: {
-    history () { return this.$store.getters['history/list']  },
-    historyStyle () { return null /* `{ max-height: ${window.innerHeight} !important; overflow-y: scroll; }` */ },
-    prefs () { return this.$store.getters['preferences'] || {} },
+    history () { return this.$store.getters['history/list'] },
+    prefs () { return this.$store.getters['preferences'] },
     sheets () { return this.$store.getters['sheets/list'] },
     vtable () { return this.prefs[PREF_VTABLE_ID] }
   },
@@ -245,13 +263,8 @@ export default {
     },
     async clearHistory () {
       if (!this.vtable) return
-      this.isLoadingHistory = true
-      try {
-        await this.$store.dispatch('history/clear', this.vtable)
-        this.refreshHistory()
-      } catch (error) {
-        this.error = JSON.stringify(error, undefined, 2)
-      }
+      await this.run('isLoadingHistory', 'history/clear')
+      this.refreshHistory()
     },
     async copyToClipboard () {
       await copyToClipboard(this.vtable)
@@ -262,77 +275,63 @@ export default {
       await this.$store.dispatch('sendDiceResult', { vTable: this.vtable, diceResult })
       await this.refreshHistory()
     },
-    async refreshHistory () {
-      if (!this.vtable) return
-      this.isLoadingHistory = true
-      try {
-        await this.$store.dispatch('history/list', this.vtable)
-      } catch (error) {
-        this.error = JSON.stringify(error, undefined, 2)
-      }
-      setTimeout(() => { this.isLoadingHistory = false }, 500)
+    refreshHistory () {
+      if (this.vtable) return this.run('isLoadingHistory', 'history/list')
     },
-    async refreshMice () {
-      if (!this.vtable) return
-      this.isLoadingMice = true
-      try {
-        await this.$store.dispatch('sheets/list', this.vtable)
-      } catch (error) {
-        this.error = JSON.stringify(error, undefined, 2)
-      }
-      setTimeout(() => { this.isLoadingMice = false }, 500)
+    refreshMice () {
+      if (this.vtable) return this.run('isLoadingMice', 'sheets/list')
     },
     async removeSheet ({ name }) {
       if (!this.vtable) return
       await this.$store.dispatch('sheets/remove', { tableId: this.vtable, name })
       this.refreshMice()
     },
-    serialize () {
-      return {
-        turns: this.$refs['turn-tracker'].serialize()
+    async run (loadingFlag, action) {
+      this[loadingFlag] = true
+      try {
+        await this.$store.dispatch(action, this.vtable)
+      } catch (error) {
+        console.error(`[app] ${action} error:`, error)
+        this.error = error.message
       }
+      setTimeout(() => { this[loadingFlag] = false }, MIN_LOADING_MS)
+    },
+    serialize () {
+      return { turns: this.$refs['turn-tracker'].serialize() }
+    },
+    toggleTheme () {
+      this.theme = this.theme === THEME_DARK ? THEME_LIGHT : THEME_DARK
+      applyTheme(this.theme)
+      saveTheme(this.theme)
     }
   },
   created () {
+    this.theme = loadTheme()
+    applyTheme(this.theme)
+
     this.$store.dispatch('loadPreferences')
     if (!this.vtable) {
       this.$store.dispatch('savePreferences', { key: PREF_VTABLE_ID, value: uuidv5('mausritter-colony', uuidv4()) })
-      this.$store.dispatch('loadPreferences') // Refresh vtable
     }
   },
   async mounted () {
     this.changeLocale(loadLocale())
 
-    dices3D.initialize('dice-canvas', 400, { debug: false })
+    // The 3D dice library is loaded with deferred scripts
+    window.addEventListener('load', () => initializeDice('dice-canvas'))
 
-    await this.$store.dispatch('vtable/get', this.vtable)
-    if (this.$store.getters['vtable/current'] === false) {
-      console.log('Creating table data')
-      await this.$store.dispatch('vtable/create', { tableId: this.vtable, data: this.serialize() })
-    } else {
-      this.$refs['turn-tracker'].set(this.$store.getters['vtable/current'])
+    // The backend is optional: the app works offline without it
+    try {
+      await this.$store.dispatch('vtable/get', this.vtable)
+      const current = this.$store.getters['vtable/current']
+      if (current === false) {
+        await this.$store.dispatch('vtable/create', { tableId: this.vtable, data: this.serialize() })
+      } else if (current) {
+        this.$refs['turn-tracker'].set(current)
+      }
+    } catch (error) {
+      console.warn('[app] backend unavailable, running offline:', error.message)
     }
-
-    // Prevent losing sheet if user clos the browser's tab
-    // window.addEventListener("beforeunload", e => {
-    //   let isDirty = false
-    //   if (this.isStandaloneApp) {
-    //     isDirty = this.$refs['welcome-app'].isDirty()
-    //   } else {
-    //     // Web application
-    //     this.$store.commit('historyAdd', { message: this.$t('Welcome to Mausritter Colony!') })
-    //     isDirty = this.$refs['welcome'].isDirty()
-    //   }
-
-    //   if (!isDirty) {
-    //       return undefined
-    //   }
-
-    //   let confirmationMessage = this.$t('If you leave before saving, your changes will be lost.')
-    //   let event = e || window.event
-    //   event.returnValue = confirmationMessage // Gecko + IE
-    //   return confirmationMessage // Gecko + Webkit, Safari, Chrome etc.
-    // })
   }
 }
 </script>

@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import { request } from '@/services/api'
 
 export default {
   namespaced: true,
@@ -6,38 +6,19 @@ export default {
     list: []
   },
   getters: {
-    list: state => { return state.list }
+    list: state => state.list
   },
   actions: {
-    list ({ commit, rootState }, tableId) {
-      return Vue.http.get(`${rootState.config.SERVER_API_URL}/sheets.php?vtable=${tableId}`)
-        .then((response) => {
-          commit('setList', { data: response.data })
-          return response
-        })
-        .catch((error) => {
-          commit('FAILURE', error)
-        })
+    async list ({ commit }, tableId) {
+      commit('setList', await request(`/sheets?vtable=${tableId}`))
     },
-    remove ({ commit, rootState }, { tableId, name }) {
-      return Vue.http.delete(`${rootState.config.SERVER_API_URL}/sheets.php?vtable=${tableId}&name=${name}`)
-        .then((response) => {
-          return response
-        })
-        .catch((error) => {
-          commit('FAILURE', error)
-        })
+    remove (_context, { tableId, name }) {
+      return request(`/sheets?vtable=${tableId}&name=${encodeURIComponent(name)}`, { method: 'DELETE' })
     }
   },
   mutations: {
-    FAILURE: (error) => {
-      throw error
-    },
-    setList (state, { data }) {
-      data.forEach(sheet => {
-        sheet.updated = new Date(sheet.updated)
-      });
-      state.list = data
+    setList (state, data) {
+      state.list = (Array.isArray(data) ? data : []).map(sheet => ({ ...sheet, updated: new Date(sheet.updated) }))
     }
   }
 }

@@ -1,53 +1,18 @@
 @charset "utf-8";
 
-@use "~bulma/sass";
-@use "sass:list";
-// @use '~@creativebulma/bulma-tooltip/src/sass/index.sass';
-
-// The container horizontal gap, which acts as the offset for breakpoints
-$gap: 32px !default;
-$tablet: 769px !default;
-$desktop: 960px + (2 * $gap) !default;
-$widescreen: 1152px + (2 * $gap) !default;
-$fullhd: 1344px + (2 * $gap) !default;
-
-$body-size: 13px !default;
-
-// $body-size: 14px !default;
-// Set our brand colors
-// $purple: #8A4D76;
-// $pink: #FA7C91;
-// $brown: #757763;
-// $beige-light: #D0D1CD;
-// $beige-lighter: #EFF0EB;
+// Bulma variable overrides must be declared BEFORE importing Bulma
 $primary: yellow;
-
-// Update Bulma's global variables
-// $family-sans-serif: "Nunito", sans-serif;
-// $grey-dark: $brown;
-// $grey-light: $beige-light;
-// $tooltip-background-color: #757763;
-// $tooltip-color: hsl(221, 14%, 100%);
-// $size-7: 0.75rem;
-// $radius-small: 0.25rem;
-// $primary: $purple;
-// $link: $pink;
-// $widescreen-enabled: true;
-// $fullhd-enabled: true;
-
-// Update some of Bulma's component variables
-// $body-background-color: $beige-lighter;
 $control-border-width: 2px;
 $input-border-color: transparent;
 $input-shadow: none;
 $card-shadow: none;
 $card-header-shadow: none;
 $card-content-padding: 0.5rem;
+$panel-heading-background-color: yellow;
+$panel-heading-color: black;
 
-$panel-heading-background-color: yellow !default;
-$panel-heading-color: black !default;
-
-// $family-primary: "Inter", "SF Pro", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+// Bulma 1.x
+@use "bulma/sass" as bulma;
 
 html, body {
   overflow-y: auto !important;
@@ -68,29 +33,9 @@ html, body {
   align-items: center;
 }
 
-.text-wrap {
-  overflow-wrap: break-word;
-}
-
 .boxed {
-  // border: 1px solid $dark;
-  border-radius: sass.$radius;
+  border-radius: bulma.$radius;
   background-color: $primary;
-}
-
-.outlined {
-  border-radius: sass.$radius;
-  border: 1px solid sass.$dark;
-}
-
-.filler {
-  -webkit-box-flex: 1 !important;
-  -ms-flex-positive: 1 !important;
-  flex-grow: 1 !important;
-}
-
-.rotate-half {
-  transform: rotate(180deg);
 }
 
 .rotate {
@@ -98,12 +43,8 @@ html, body {
 }
 
 @keyframes rotation {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(359deg);
-  }
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(359deg); }
 }
 
 .slide-up, .slide-down {
@@ -121,20 +62,8 @@ html, body {
   transform: rotate(180deg);
 }
 
-.rotate {
-  animation: rotation 2s infinite linear;
-}
-
-.scrollable {
-  overflow-y: auto;
-}
-
 .application-background {
   background-color: #eec;
-  // background-image: url('../img/cartographer.jpg');
-  // background-repeat: no-repeat;
-  // background-position: left top;
-  // background-size: 100%;
 }
 
 .table-background {
@@ -152,6 +81,29 @@ html, body {
   background-color: rgba(255, 255, 255, 0.5);
 }
 
+// Dark mode (Bulma 1.x handles its own components through data-theme)
+[data-theme="dark"] {
+  .application-background {
+    background-color: #1c1c14;
+  }
+
+  .background-white-75 {
+    background-color: rgba(0, 0, 0, 0.75);
+  }
+
+  .background-white-50 {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .tracker-cell {
+    background-color: #222;
+  }
+
+  .box .has-text-black {
+    color: inherit !important;
+  }
+}
+
 hr.history-separator {
   background-color: $primary;
   padding: 0;
@@ -159,44 +111,22 @@ hr.history-separator {
 }
 
 .accordion {
-  border-radius: sass.$panel-radius;
-  box-shadow: sass.$panel-shadow;
-  font-size: sass.$size-normal;
+  border-radius: bulma.$panel-radius;
+  box-shadow: bulma.$panel-shadow;
+  font-size: bulma.$size-normal;
   &:not(:last-child) {
-    margin-bottom: sass.$panel-margin;
-  }
-  // Colors
-  @each $name, $components in sass.$panel-colors {
-    @if list.length($components) > 1 {
-      $color: nth($components, 1);
-      $color-invert: nth($components, 2);
-      &.is-#{$name} {
-        .accordion-heading {
-          background-color: $color;
-          color: $color-invert;
-        }
-        .accordion-block.is-active .accordion-icon {
-          color: $color;
-        }
-      }
-    }
-  }
-}
-
-.accordion-block {
-  &:not(:last-child) {
-    border-bottom: sass.$panel-item-border;
+    margin-bottom: bulma.$panel-margin;
   }
 }
 
 .accordion-heading {
   background-color: $panel-heading-background-color;
-  border-radius: sass.$panel-radius sass.$panel-radius 0 0;
+  border-radius: bulma.$panel-radius bulma.$panel-radius 0 0;
   color: $panel-heading-color;
-  font-size: sass.$panel-heading-size;
-  font-weight: sass.$panel-heading-weight;
-  line-height: sass.$panel-heading-line-height;
-  padding: sass.$panel-heading-padding;
+  font-size: bulma.$panel-heading-size;
+  font-weight: bulma.$panel-heading-weight;
+  line-height: bulma.$panel-heading-line-height;
+  padding: bulma.$panel-heading-padding;
 }
 
 .tracker th {
@@ -245,13 +175,21 @@ hr.history-separator {
   background-color: yellow;
 }
 
+.enemy {
+  min-width: 230px;
+}
+
+.enemy-defeated {
+  opacity: 0.6;
+}
+
 .dice3d-canvas {
   width: 100%;
   height: 600px;
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 2000; /* Above all */;
+  z-index: 2000;
 }
 
 .icon-middle {

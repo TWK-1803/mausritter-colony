@@ -1,73 +1,45 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import { createStore } from 'vuex'
 
-import config from '@/config'
+import { request } from '@/services/api'
 import { loadPrefs, savePrefsKey } from '@/services/preferences'
 import history from './history'
 import sheets from './sheets'
 import vtable from './vtable'
 
-Vue.use(Vuex)
-
-export const store = new Vuex.Store({
+export const store = createStore({
   modules: {
     history,
     sheets,
     vtable
   },
-  state () {
-    return {
-      config,
-      locale: null,
-      preferences: {},
-      standaloneApp: false // This is true if this app is a computer application. By default this app is a web page
-    }
-  },
+  state: () => ({
+    locale: null,
+    preferences: {}
+  }),
   getters: {
-    config: state => { return state.config || {} },
-    locale: state => { return state.locale },
-    preferences: state => { return state.preferences || {} },
-    standaloneApp: state => { return state.standaloneApp }
+    locale: state => state.locale,
+    preferences: state => state.preferences
   },
   mutations: {
     setLocale (state, locale) {
       state.locale = locale
     },
-    setSheets (state, sheets) {
-      state.sheets = sheets
-    },
     setPrefs (state, preferences) {
       state.preferences = preferences
-    },
-    setStandaloneApp (state, standaloneApp) {
-      state.standaloneApp = standaloneApp
     }
   },
   actions: {
-    changeLocale (context, locale) {
-      context.commit('setLocale', locale)
+    changeLocale ({ commit }, locale) {
+      commit('setLocale', locale)
     },
-    loadPreferences (context) {
-      context.commit('setPrefs', loadPrefs())
+    loadPreferences ({ commit }) {
+      commit('setPrefs', loadPrefs())
     },
-    savePreferences (context, { key, value }) {
-      context.commit('setPrefs', savePrefsKey(key, value))
+    savePreferences ({ commit }, { key, value }) {
+      commit('setPrefs', savePrefsKey(key, value))
     },
-    async sendDiceResult ({ commit }, { vTable, diceResult }) {
-      const options = {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(diceResult)
-      }
-      return fetch(`${config.SERVER_API_URL}/dices.php?vtable=${vTable}&sheet=${vTable}`, options)
-        .then((response) => {
-          return response
-        })
-        .catch((error) => {
-          commit('FAILURE', error)
-        })
+    sendDiceResult (_context, { vTable, diceResult }) {
+      return request(`/dices?vtable=${vTable}&sheet=${vTable}`, { method: 'POST', body: diceResult })
     }
   }
 })
-
-export default store

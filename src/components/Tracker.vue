@@ -1,9 +1,16 @@
 <template>
   <div class="is-flex is-flex-wrap-wrap">
-    <tracker-watch :title="$t('Night watch')" :title-left="$t('Sunrise')" can-clear title-left-bold v-model="night" @change="onChange('night', ...arguments)" @clear="onClear('night')" />
-    <tracker-watch :title="$t('Morning watch')" :title-left="$t('Noon')" v-model="morning" can-clear @change="onChange('morning', ...arguments)" @clear="onClear('morning')" />
-    <tracker-watch :title="$t('Afternoon watch')" :title-left="$t('Sunset')" can-clear title-left-bold v-model="afternoon" @change="onChange('afternoon', ...arguments)" @clear="onClear('afternoon')" />
-    <tracker-watch :title="$t('Evening watch')" v-model="evening" can-clear @change="onChange('evening', ...arguments)" @clear="onClear('evening')" />
+    <tracker-watch
+      v-for="watch in WATCHES"
+      :key="watch.name"
+      can-clear
+      :title="$t(watch.title)"
+      :title-left="watch.titleLeft && $t(watch.titleLeft)"
+      :title-left-bold="watch.bold"
+      :model-value="$data[watch.name]"
+      @change="onChange(watch.name, $event)"
+      @clear="onClear(watch.name)"
+    />
   </div>
 </template>
 
@@ -11,41 +18,37 @@
 import { TURN_TRACKER_LAST } from '@/services/tracker'
 import TrackerWatch from './TrackerWatch.vue'
 
+const WATCHES = [
+  { name: 'night', title: 'Night watch', titleLeft: 'Sunrise', bold: true },
+  { name: 'morning', title: 'Morning watch', titleLeft: 'Noon', bold: false },
+  { name: 'afternoon', title: 'Afternoon watch', titleLeft: 'Sunset', bold: true },
+  { name: 'evening', title: 'Evening watch', titleLeft: '', bold: false }
+]
+
+const newWatch = () => Array.from({ length: 6 }, () => Array(6).fill(0))
+
 export default {
+  name: 'Tracker',
   components: { TrackerWatch },
-  name: 'TurnTracker',
   data () {
     return {
-      afternoon: this.newWatch(),
-      evening: this.newWatch(),
-      morning: this.newWatch(),
-      night: this.newWatch()
+      WATCHES,
+      afternoon: newWatch(),
+      evening: newWatch(),
+      morning: newWatch(),
+      night: newWatch()
     }
   },
   methods: {
-    newWatch () {
-      return [...[
-        [0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0]
-      ]]
+    onChange (watchName, { y, x }) {
+      const watch = this[watchName].map(row => [...row])
+      watch[y][x] = watch[y][x] >= TURN_TRACKER_LAST ? 0 : watch[y][x] + 1
+      this[watchName] = watch
+      this.$store.dispatch('vtable/update', { data: this.serialize() })
     },
     onClear (watchName) {
-      this[watchName] = this.newWatch()
+      this[watchName] = newWatch()
       this.$store.dispatch('vtable/update', { data: this.serialize() })
-    },
-    onChange (watchName, { y, x }) {
-      const tmp = [...this[watchName]]
-      if (tmp[y][x] >= TURN_TRACKER_LAST) tmp[y][x] = 0
-      else tmp[y][x]++
-      this.$store.dispatch('vtable/update', { data: this.serialize() })
-      // Force refreshing watch turn table
-      this.set({
-        [watchName]: [...tmp]
-      })
     },
     serialize () {
       return {
@@ -57,10 +60,9 @@ export default {
     },
     set (data) {
       if (!data) return
-      if (data.afternoon) this.afternoon = [...data.afternoon]
-      if (data.evening) this.evening = [...data.evening]
-      if (data.morning) this.morning = [...data.morning]
-      if (data.night) this.night = [...data.night]
+      for (const { name } of WATCHES) {
+        if (data[name]) this[name] = [...data[name]]
+      }
     }
   }
 }

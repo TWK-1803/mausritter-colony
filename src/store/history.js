@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import { request } from '@/services/api'
 
 export default {
   namespaced: true,
@@ -6,54 +6,26 @@ export default {
     list: []
   },
   getters: {
-    list: state => { return state.list || [] }
+    list: state => state.list
   },
   actions: {
-    clear ({ commit, rootState }, tableId) {
-      return Vue.http.delete(`${rootState.config.SERVER_API_URL}/dices.php?vtable=${tableId}`)
-        .then((response) => {
-          return response
-        })
-        .catch((error) => {
-          commit('API_FAILURE', error)
-        })
+    clear (_context, tableId) {
+      return request(`/dices?vtable=${tableId}`, { method: 'DELETE' })
     },
-    list ({ commit, rootState }, tableId) {
-      return Vue.http.get(`${rootState.config.SERVER_API_URL}/dices.php?vtable=${tableId}`)
-        .then((response) => {
-          commit('setList', { data: response.data })
-          return response
-        })
-        .catch((error) => {
-          commit('API_FAILURE', error)
-        })
+    async list ({ commit }, tableId) {
+      commit('setList', await request(`/dices?vtable=${tableId}`))
     }
   },
   mutations: {
-    API_FAILURE: (error) => {
-      throw error
-    },
-    setList (state, { data }) {
-      const result = []
-      if (data && Array.isArray(data)) {
-        data.forEach(line => {
-          try {
-            result.push({
-              ...line,
-              _date: new Date(line.timestamp),
-              _json: JSON.parse(line.json)
-            })
-          } catch (error) {
-            console.error('[history] json parse error:', error)
-            console.error('[history] for:', line)
-          }
-        })
-      }
-      state.list = result
-      // Sort by date DESC. Latest date start the array
-      // state.list = result.sort((a, b) => {
-      //   return b._date.getTime() - a._date.getTime()
-      // }) || []
+    setList (state, data) {
+      state.list = (Array.isArray(data) ? data : []).flatMap(line => {
+        try {
+          return [{ ...line, _date: new Date(line.timestamp), _json: JSON.parse(line.json) }]
+        } catch (error) {
+          console.error('[history] json parse error:', error)
+          return []
+        }
+      })
     }
   }
 }

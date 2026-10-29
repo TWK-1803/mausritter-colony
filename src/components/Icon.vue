@@ -1,25 +1,20 @@
 <template>
-  <iconify-icon v-bind="$attrs" v-on="$listeners" :icon="icons[icon]" :class="isButton ? 'icon-middle is-clickable' : 'icon-middle'" />
+  <IconifyIcon v-bind="$attrs" :icon="icons[icon]" class="icon-middle" :class="{ 'is-clickable': isButton }" />
 </template>
 
 <script>
-/*
-* Simplified Iconify Icon. You can use all its properties,
-* see https://docs.iconify.design/implementations/vue/
-*/
-
-import icons from '../services/icons'
-import IconifyIcon from '@iconify/vue'
+import { Icon as IconifyIcon } from '@iconify/vue'
+import icons from '@/services/icons'
 
 export default {
-  name: 'Sheet',
+  name: 'McIcon',
   components: { IconifyIcon },
   props: {
     icon: { type: String, required: true },
     isButton: { type: Boolean, default: false }
   },
   data () {
-    return  {
+    return {
       icons
     }
   }

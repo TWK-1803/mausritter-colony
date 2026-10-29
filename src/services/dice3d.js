@@ -1,106 +1,62 @@
 /* global $diceCore */
-let _canvas = null
-let _diceBox = null
-let _options = {}
+const CALLBACK_DELAY = 500
 
-const DICE_TIMEOUT = 300
+let canvas = null
+let diceBox = null
 
-export function setDiceColor (color) {
-  $diceCore.dice.dice_color = color
-  $diceCore.dice.label_color = '#ffffff'
+function fitCanvas () {
+  canvas.style.width = `${window.innerWidth - 8}px`
+  canvas.style.height = `${window.innerHeight}px`
 }
 
-export function initialize (canvasId, height, options = {}) {
-  if (_canvas !== null) return // Already initialized
+// The 3D dice library is loaded with plain <script> tags. If it is missing,
+// rolls fall back to plain JS so the app keeps working without the animation.
+export function initialize (canvasId) {
+  if (diceBox) return
 
-  _options = options
-
-  _canvas = $diceCore.id(canvasId)
-  // _canvas.style.width = '100%'
-  // _canvas.style.height = height + 'px'
-  _canvas.style.width = window.innerWidth - 8 + 'px'
-  _canvas.style.height = window.innerHeight + 'px'
-
-  $diceCore.dice.use_true_random = false
-  $diceCore.dice.use_shadows = false
-  setDiceColor('#000070')
-
-  _diceBox = new $diceCore.dice.dice_box(_canvas)
-  _diceBox.animate_selector = false
-  _canvas.style.display = 'none'
-
-  if (_options.debug) {
-    console.log('[dice3d] init 3D dices on canvas', canvasId)
-    console.log('[dice3d] canvas size', _canvas.style.width, _canvas.style.height)
-    console.log('[dice3d] canvas size', _canvas.style.width, _canvas.style.height)
+  if (typeof $diceCore === 'undefined') {
+    console.warn('[dice3d] $diceCore not available, 3D dice disabled')
+    return
   }
 
-  // does not work for mobile devices
-  // $diceCore.bind(window, 'resize', function() {
-  //   if (!_canvas) return
-  //   console.log('#resize')
-  //   _canvas.style.width = window.innerWidth - 8 + 'px'
-  //   _canvas.style.height = window.innerHeight - 8 + 'px'
-  //   _diceBox.reinit(_canvas)
-  // })
-
-  // $diceCore.bind(window, 'orientationChange', function() {
-  //   if (!_canvas) return
-  //   console.log('#orientationChange')
-  //   _canvas.style.width = window.innerWidth - 8 + 'px'
-  //   _canvas.style.height = window.innerHeight - 8 + 'px'
-  //   _diceBox.reinit(_canvas)
-  // })
+  try {
+    canvas = $diceCore.id(canvasId)
+    fitCanvas()
+    $diceCore.dice.use_true_random = false
+    $diceCore.dice.use_shadows = false
+    $diceCore.dice.dice_color = '#000070'
+    $diceCore.dice.label_color = '#ffffff'
+    diceBox = new $diceCore.dice.dice_box(canvas)
+    diceBox.animate_selector = false
+    canvas.style.display = 'none'
+  } catch (err) {
+    console.warn('[dice3d] initialization failed, 3D dice disabled:', err.message)
+    canvas = null
+    diceBox = null
+  }
 }
 
-export function roll({ formula = '2d6', timeout, callbackFn }) {
-
-  function before_roll(vectors, notation, callback) {
-    if (_options.debug) {
-      console.log('[dice3d] before_roll vectors:', vectors)
-      console.log('[dice3d] before_roll notation:', notation)
-      console.log('[dice3d] before_roll callback:', callback)
-    }
-    callback()
+export function roll ({ formula = '2d6', callbackFn }) {
+  if (!diceBox) {
+    const [, count = 1, faces = 6] = formula.match(/^(\d+)d(\d+)$/) || []
+    const dices = Array.from({ length: Number(count) }, () => Math.floor(Math.random() * Number(faces)) + 1)
+    const total = dices.reduce((sum, dice) => sum + dice, 0)
+    setTimeout(() => callbackFn({ dices, total }), 0)
+    return
   }
 
-  function notation_getter() {
-    if (_options.debug) {
-      console.log('[dice3d] notation_getter formula:', formula)
-      console.log('[dice3d] notation_getter return', $diceCore.dice.parse_notation(formula))
-    }
-    return $diceCore.dice.parse_notation(formula)
+  const afterRoll = (_notation, dices) => {
+    setTimeout(() => {
+      canvas.style.display = 'none'
+      callbackFn({ dices, total: dices.reduce((sum, dice) => sum + dice, 0) })
+    }, CALLBACK_DELAY)
   }
 
-  function after_roll(notation, result) {
-    if (_options.debug) {
-      console.log('[dice3d] after_roll notation:', notation)
-      console.log('[dice3d] after_roll result', result)
-    }
-    let total = 0
-    for (let i = 0; i < result.length; i++) total += result[i]
-    if (callbackFn) setTimeout(() => {
-      _canvas.style.display = 'none'
-      callbackFn({ dices: result, total })
-    }, 500)
-    else setTimeout(() => { _canvas.style.display = 'none'}, timeout || DICE_TIMEOUT)
-  }
-
-  if (_options.debug) {
-    console.log('[dice3d] roll formula:', formula)
-    console.log('[dice3d] roll timeout:', timeout)
-    console.log('[dice3d] roll callbackFn:', callbackFn)
-  }
-
-  // Resize canvas to fit app window
-  _canvas.style.width = window.innerWidth - 8 + 'px'
-  _canvas.style.height = window.innerHeight + 'px'
-  _canvas.style.display = ''
-  _diceBox.start_throw(notation_getter, before_roll, after_roll)
-}
-
-export default {
-  initialize,
-  roll,
-  setDiceColor
+  fitCanvas()
+  canvas.style.display = ''
+  diceBox.start_throw(
+    () => $diceCore.dice.parse_notation(formula),
+    (_vectors, _notation, callback) => callback(),
+    afterRoll
+  )
 }

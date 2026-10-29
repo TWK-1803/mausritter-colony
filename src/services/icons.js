@@ -25,9 +25,11 @@ import menu from '@iconify-icons/ic/menu'
 import menuBack from '@iconify-icons/mdi/backburger'
 import mouseFace from '@iconify-icons/openmoji/mouse-face'
 import paws from '@iconify-icons/openmoji/paw-prints'
+import moon from '@iconify-icons/mdi/weather-night'
 import refresh from '@iconify-icons/ic/round-refresh'
 import square from '@iconify-icons/openmoji/white-large-square'
 import success from '@iconify-icons/openmoji/check-mark'
+import sun from '@iconify-icons/mdi/white-balance-sunny'
 import trash from '@iconify-icons/openmoji/delete'
 
 export default {
@@ -55,9 +57,11 @@ export default {
   menu,
   'menu-back': menuBack,
   'mouse-face': mouseFace,
+  moon,
   paws,
   refresh,
   square,
   success,
+  sun,
   trash
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <header class="card-header">
-      <div class="card-header-title is-flex is-flex-direction row is-justify-content-space-between mx-1 p-0">
+      <div class="card-header-title is-flex is-flex-direction-row is-justify-content-space-between mx-1 p-0">
         <mc-icon icon="mouse-face" height="48" />
 
         <div class="ml-1 is-flex is-flex-direction-column">
@@ -10,12 +10,12 @@
           <div class="is-size-7">{{ $t('Last update:') }} {{ lastUpdate.toLocaleString(locale) }}</div>
         </div>
 
-        <div class="ml-4 ">
-          <div class="dropdown" :class="deleteMenu ? 'is-active' : ''">
+        <div class="ml-4">
+          <div class="dropdown" :class="{ 'is-active': deleteMenu }">
             <div class="dropdown-trigger">
-              <mc-icon icon="menu" class="is-clickable" :class="deleteMenu ? 'boxed' : ''" height="24" @click="deleteMenu = !deleteMenu" />
+              <mc-icon icon="menu" class="is-clickable" :class="{ boxed: deleteMenu }" height="24" @click="deleteMenu = !deleteMenu" />
             </div>
-            <div class="dropdown-menu" id="dropdown-menu" role="menu">
+            <div class="dropdown-menu" role="menu">
               <div class="dropdown-content">
                 <div class="has-text-right">
                   <mc-icon icon="menu-back" class="is-clickable" height="24" @click="deleteMenu = false" />
@@ -34,30 +34,19 @@
       <div class="content">
         <table class="table is-striped has-text-centered">
           <tbody>
-            <tr class="is-size-7"><td></td><td>{{ $t('Max') }}</td><td class="has-text-info">{{ $t('Current') }}</td></tr>
-            <tr><td class="has-text-left has-text-weight-bold">{{ $t('STR') }}</td><td>{{ str_max }}</td><td class="is-size-5 has-text-info">{{ str }}</td></tr>
-            <tr><td class="has-text-left has-text-weight-bold">{{ $t('DEX') }}</td><td>{{ dex_max }}</td><td class="is-size-5 has-text-info">{{ dex }}</td></tr>
-            <tr><td class="has-text-left has-text-weight-bold">{{ $t('WIL') }}</td><td>{{ wil_max }}</td><td class="is-size-5 has-text-info">{{ wil }}</td></tr>
-            <tr><td class="has-text-left has-text-weight-bold">{{ $t('HP') }}</td><td>{{ hp_max }}</td><td class="is-size-5 has-text-info">{{ hp }}</td></tr>
+            <tr class="is-size-7">
+              <td />
+              <td>{{ $t('Max') }}</td>
+              <td class="has-text-info">{{ $t('Current') }}</td>
+            </tr>
+            <tr v-for="stat in stats" :key="stat.label">
+              <td class="has-text-left has-text-weight-bold">{{ $t(stat.label) }}</td>
+              <td>{{ stat.max }}</td>
+              <td class="is-size-5 has-text-info">{{ stat.current }}</td>
+            </tr>
           </tbody>
         </table>
       </div>
-
-      <!-- FUTURE: keep some states
-      <div class="content is-flex is-justify-content-space-between">
-        <label class="checkbox">
-          {{ $t('Injured') }}
-          <input type="checkbox">
-        </label>
-        <label class="ml-4 checkbox">
-          {{ $t('Mad') }}
-          <input type="checkbox">
-        </label>
-        <label class="ml-4 checkbox">
-          {{ $t('Encumbered') }}
-          <input type="checkbox">
-        </label>
-      </div> -->
     </div>
   </div>
 </template>
@@ -78,20 +67,24 @@ export default {
     wil: { type: Number, required: true },
     wil_max: { type: Number, required: true }
   },
-  data: () => ({
-    deleteMenu: false
-  }),
+  emits: ['remove'],
+  data () {
+    return {
+      deleteMenu: false
+    }
+  },
   computed: {
+    backgroundIndex () { return this.name.indexOf('(') },
     locale () { return this.$store.getters['locale'] },
-    sheetBackground () {
-      const i = this.name.indexOf('(') || this.name.indexOf('—')
-      if (!this.name || !i) return ''
-      return this.name.slice(i, this.name.length)
-    },
-    sheetName () {
-      const i = this.name.indexOf('(') || this.name.indexOf('—')
-      if (!this.name || !i) return this.name
-      return this.name.slice(0, i)
+    sheetBackground () { return this.backgroundIndex > 0 ? this.name.slice(this.backgroundIndex) : '' },
+    sheetName () { return this.backgroundIndex > 0 ? this.name.slice(0, this.backgroundIndex) : this.name },
+    stats () {
+      return [
+        { label: 'STR', current: this.str, max: this.str_max },
+        { label: 'DEX', current: this.dex, max: this.dex_max },
+        { label: 'WIL', current: this.wil, max: this.wil_max },
+        { label: 'HP', current: this.hp, max: this.hp_max }
+      ]
     }
   },
   methods: {

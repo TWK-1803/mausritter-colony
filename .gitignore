@@ -1,21 +1,15 @@
 .DS_Store
 node_modules
-db.config.json
 /dist
-/tmp
-
-
-# local env files
+/server/data
+start.bat
+.env
 .env.local
 .env.*.local
-
-# Log files
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-
-# Editor directories and files
 .idea
 .vscode
 *.suo
