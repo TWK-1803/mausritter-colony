@@ -6,8 +6,8 @@
 
         <div class="ml-1 is-flex is-flex-direction-column">
           <div class="is-size-5">{{ sheetName }}</div>
-          <div>{{ $t('Level') }} {{ level }} {{ sheetBackground }}</div>
-          <div class="is-size-7">{{ $t('Last update:') }} {{ lastUpdate.toLocaleString(locale) }}</div>
+          <div>Level {{ level }} {{ sheetBackground }}</div>
+          <div class="is-size-7">Last update: {{ lastUpdate.toLocaleString() }}</div>
         </div>
 
         <div class="ml-4">
@@ -21,7 +21,7 @@
                   <mc-icon icon="menu-back" class="is-clickable" height="24" @click="deleteMenu = false" />
                 </div>
                 <a href="#" class="dropdown-item" @click="remove">
-                  {{ $t('Remove from table') }}
+                  Remove from table
                 </a>
               </div>
             </div>
@@ -36,11 +36,11 @@
           <tbody>
             <tr class="is-size-7">
               <td />
-              <td>{{ $t('Max') }}</td>
-              <td class="has-text-info">{{ $t('Current') }}</td>
+              <td>Max</td>
+              <td class="has-text-info">Current</td>
             </tr>
             <tr v-for="stat in stats" :key="stat.label">
-              <td class="has-text-left has-text-weight-bold">{{ $t(stat.label) }}</td>
+              <td class="has-text-left has-text-weight-bold">{{ stat.label }}</td>
               <td>{{ stat.max }}</td>
               <td class="is-size-5 has-text-info">{{ stat.current }}</td>
             </tr>
@@ -75,7 +75,6 @@ export default {
   },
   computed: {
     backgroundIndex () { return this.name.indexOf('(') },
-    locale () { return this.$store.getters['locale'] },
     sheetBackground () { return this.backgroundIndex > 0 ? this.name.slice(this.backgroundIndex) : '' },
     sheetName () { return this.backgroundIndex > 0 ? this.name.slice(0, this.backgroundIndex) : this.name },
     stats () {

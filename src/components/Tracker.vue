@@ -4,8 +4,8 @@
       v-for="watch in WATCHES"
       :key="watch.name"
       can-clear
-      :title="$t(watch.title)"
-      :title-left="watch.titleLeft && $t(watch.titleLeft)"
+      :title="watch.title"
+      :title-left="watch.titleLeft"
       :title-left-bold="watch.bold"
       :model-value="$data[watch.name]"
       @change="onChange(watch.name, $event)"

@@ -14,6 +14,16 @@ export default {
     },
     async list ({ commit }, tableId) {
       commit('setList', await request(`/dices?vtable=${tableId}`))
+    },
+    async push ({ commit }, { tableId, diceResult }) {
+      commit('pushEntry', {
+        vtable: tableId,
+        sheet: tableId,
+        timestamp: new Date().toISOString(),
+        _date: new Date(),
+        _json: diceResult
+      })
+      await request(`/dices?vtable=${tableId}&sheet=${tableId}`, { method: 'POST', body: diceResult })
     }
   },
   mutations: {
@@ -26,6 +36,9 @@ export default {
           return []
         }
       })
+    },
+    pushEntry (state, entry) {
+      state.list.unshift(entry)
     }
   }
 }

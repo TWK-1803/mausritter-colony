@@ -3,7 +3,7 @@
     <div v-for="(line, index) in value" :key="index" class="is-flex is-flex-direction-column">
       <div class="is-flex is-flex-direction-row is-flex-wrap-wrap is-justify-content-space-between">
         <div class="has-text-weight-bold has-text-black">{{ header(line) }}</div>
-        <div class="is-size-7">{{ line._date.toLocaleString(locale) }}</div>
+        <div class="is-size-7">{{ line._date.toLocaleString() }}</div>
       </div>
 
       <div class="is-flex is-flex-direction-row is-align-items-center is-flex-wrap-wrap is-justify-content-start">
@@ -32,13 +32,10 @@ export default {
   props: {
     value: { type: Array, required: true }
   },
-  computed: {
-    locale () { return this.$store.getters['locale'] }
-  },
   methods: {
     advantageText (diceResult) {
-      if (diceResult.advantage === 'a') return this.$t('advantage')
-      if (diceResult.advantage === 'd') return this.$t('disadvantage')
+      if (diceResult.advantage === 'a') return 'advantage'
+      if (diceResult.advantage === 'd') return 'disadvantage'
       return ''
     },
     cls (roll) {
@@ -49,9 +46,9 @@ export default {
     explain (diceResult) {
       let result = ''
       if (diceResult.score) {
-        result = this.$t('Need {score} or lower.', { score: diceResult.score })
+        result = `Need ${diceResult.score} or lower.`
       } else if (diceResult.upper) {
-        result = this.$t('Need {score} or upper.', { score: diceResult.upper })
+        result = `Need ${diceResult.upper} or upper.`
       }
       if (diceResult.dices && diceResult.dices.length > 1) {
         result += ` (${diceResult.dices.join(', ')})`
@@ -59,12 +56,11 @@ export default {
       return result
     },
     header (roll) {
-      return roll.vtable === roll.sheet ? this.$t('GM') : roll.sheet
+      return roll.vtable === roll.sheet ? 'GM' : roll.sheet
     },
     resume (roll) {
-      const context = roll.context ? `${roll.context} → ` : ''
-      const dice = (roll.dices ? roll.dices.length : '') + (roll.faces ? `D${roll.faces}` : '')
-      return context + dice
+      if (roll.context) return roll.context
+      return (roll.dices ? roll.dices.length : '') + (roll.faces ? `D${roll.faces}` : '')
     }
   }
 }

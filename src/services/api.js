@@ -6,5 +6,9 @@ export async function request (path, { method = 'GET', body } = {}) {
     headers: body ? { 'Content-Type': 'application/json' } : undefined,
     body: body ? JSON.stringify(body) : undefined
   })
+  if (!response.ok) {
+    const text = await response.text()
+    throw new Error(`[api] ${method} ${path} → ${response.status}: ${text}`)
+  }
   return response.json()
 }

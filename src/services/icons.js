@@ -5,6 +5,7 @@ import bank from '@iconify-icons/openmoji/bank'
 import beetle from '@iconify-icons/openmoji/beetle'
 import clear from '@iconify-icons/openmoji/wastebasket'
 import close from '@iconify-icons/ic/round-close'
+import edit from '@iconify-icons/ic/round-edit'
 import collapse from '@iconify-icons/ic/round-keyboard-arrow-up'
 import copy from '@iconify-icons/ic/round-content-copy'
 import d4 from '@iconify-icons/mdi/dice-d4'
@@ -38,6 +39,7 @@ export default {
   beetle,
   clear,
   close,
+  edit,
   collapse,
   copy,
   d4,
