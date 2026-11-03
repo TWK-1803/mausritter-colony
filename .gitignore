@@ -1,5 +1,4 @@
 node_modules
-/dist
-/server/data
+frontend/dist/
 start.bat
 .env.*
