@@ -2,32 +2,22 @@
 
 const db = require('./db')
 
-const TABLE = 'dices'
+const COLLECTION = 'dices'
 
 /** All dice rolls of a virtual table, newest first. */
-function getAll (vtable) {
-  return db.load(TABLE)
-    .filter(row => row.vtable === vtable)
-    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+async function getAll (vtable) {
+  const rows = await db.collection(COLLECTION)
+  return rows.find({ vtable }, { projection: { _id: 0 } }).sort({ timestamp: -1 }).toArray()
 }
 
-function add (vtable, sheet, json) {
-  const rows = db.load(TABLE)
-  rows.push({ vtable, sheet, json, timestamp: new Date().toISOString() })
-  db.save(TABLE, rows)
+async function add (vtable, sheet, json) {
+  const rows = await db.collection(COLLECTION)
+  await rows.insertOne({ vtable, sheet, json, timestamp: new Date() })
 }
 
-function delAll (vtable) {
-  db.save(TABLE, db.load(TABLE).filter(row => row.vtable !== vtable))
+async function delAll (vtable) {
+  const rows = await db.collection(COLLECTION)
+  await rows.deleteMany({ vtable })
 }
 
-/** Delete rolls older than maxAgeMs from every virtual table. Returns the number deleted. */
-function purgeOlderThan (maxAgeMs) {
-  const cutoff = Date.now() - maxAgeMs
-  const rows = db.load(TABLE)
-  const kept = rows.filter(row => new Date(row.timestamp).getTime() >= cutoff)
-  if (kept.length < rows.length) db.save(TABLE, kept)
-  return rows.length - kept.length
-}
-
-module.exports = { getAll, add, delAll, purgeOlderThan }
+module.exports = { getAll, add, delAll }

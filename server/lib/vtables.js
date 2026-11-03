@@ -2,25 +2,22 @@
 
 const db = require('./db')
 
-const TABLE = 'vtables'
+const COLLECTION = 'vtables'
 
-function get (id) {
-  return db.load(TABLE).find(row => row.id === id)
+async function get (id) {
+  const rows = await db.collection(COLLECTION)
+  return rows.findOne({ id }, { projection: { _id: 0 } })
 }
 
-function add (id, data) {
-  const rows = db.load(TABLE)
-  const now = new Date().toISOString()
-  rows.push({ id, opened: 0, data, created: now, updated: now })
-  db.save(TABLE, rows)
+/** Create the virtual table, or update its data when it already exists. */
+async function save (id, data) {
+  const rows = await db.collection(COLLECTION)
+  const now = new Date()
+  await rows.updateOne(
+    { id },
+    { $set: { data, updated: now }, $setOnInsert: { opened: 0, created: now } },
+    { upsert: true }
+  )
 }
 
-function edit (id, data) {
-  const rows = db.load(TABLE)
-  const index = rows.findIndex(row => row.id === id)
-  if (index === -1) return
-  rows[index] = { ...rows[index], data, updated: new Date().toISOString() }
-  db.save(TABLE, rows)
-}
-
-module.exports = { get, add, edit }
+module.exports = { get, save }

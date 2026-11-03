@@ -5,23 +5,23 @@ const { Router, requireParams, handle, ok } = require('./helpers')
 
 const router = Router()
 
-router.get('/', handle('dices', (req, res) => {
+router.get('/', handle('dices', async (req, res) => {
   if (!requireParams(req, res, 'vtable')) return
-  res.json(dices.getAll(req.query.vtable))
+  res.json(await dices.getAll(req.query.vtable))
 }))
 
-router.post('/', handle('dices', (req, res) => {
+router.post('/', handle('dices', async (req, res) => {
   if (!requireParams(req, res, 'vtable', 'sheet')) return
   if (!req.body || Object.keys(req.body).length === 0) {
     return res.status(400).json({ error: true, message: 'missing body' })
   }
-  dices.add(req.query.vtable, req.query.sheet, JSON.stringify(req.body))
+  await dices.add(req.query.vtable, req.query.sheet, JSON.stringify(req.body))
   ok(res)
 }))
 
-router.delete('/', handle('dices', (req, res) => {
+router.delete('/', handle('dices', async (req, res) => {
   if (!requireParams(req, res, 'vtable')) return
-  dices.delAll(req.query.vtable)
+  await dices.delAll(req.query.vtable)
   ok(res)
 }))
 

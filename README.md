@@ -12,9 +12,16 @@
 
 ## Install
 
+The front-end and back-end are separate packages, each with its own `package.json`
+and `node_modules`. There is no package management at the repository root.
+
 ```sh
-yarn install
+cd frontend && npm install   # Vue app, served on http://localhost:8802 (npm run serve)
+cd server && npm install     # Express API, served on http://127.0.0.1:3000 (npm start)
 ```
+
+When deploying to Vercel, create one project per package and set its **Root Directory**
+to `frontend` or `server` respectively.
 
 ## Author
 

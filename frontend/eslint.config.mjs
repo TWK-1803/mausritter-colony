@@ -3,7 +3,7 @@ import globals from 'globals'
 import pluginVue from 'eslint-plugin-vue'
 
 export default [
-  { ignores: ['dist/**', 'server/data/**', 'node_modules/**'] },
+  { ignores: ['dist/**', 'node_modules/**'] },
   js.configs.recommended,
   ...pluginVue.configs['flat/essential'],
   {
@@ -12,8 +12,7 @@ export default [
   },
   { rules: { 'vue/multi-word-component-names': 'off' } },
   {
-    files: ['server/**/*.js', '*.mjs'],
-    languageOptions: { globals: globals.node, sourceType: 'commonjs' }
+    files: ['*.mjs'],
+    languageOptions: { globals: globals.node }
   }
 ]
-

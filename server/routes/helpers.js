@@ -2,18 +2,22 @@
 
 const { Router } = require('express')
 
-/** Respond with 400 and return false when a required query parameter is missing. */
+/**
+ * Respond with 400 and return false when a required query parameter is missing.
+ * Parameters must be plain strings: Express parses `?a[$ne]=x` into an object,
+ * which would otherwise reach MongoDB as a query operator.
+ */
 function requireParams (req, res, ...names) {
-  const missing = names.find(name => req.query[name] === undefined || req.query[name] === '')
-  if (missing) res.status(400).json({ error: true, message: `missing parameter: ${missing}` })
-  return !missing
+  const invalid = names.find(name => typeof req.query[name] !== 'string' || req.query[name] === '')
+  if (invalid) res.status(400).json({ error: true, message: `missing parameter: ${invalid}` })
+  return !invalid
 }
 
-/** Wrap a route handler so errors are logged and answered with a generic 500. */
+/** Wrap an (async) route handler so errors are logged and answered with a generic 500. */
 function handle (label, fn) {
-  return (req, res) => {
+  return async (req, res) => {
     try {
-      return fn(req, res)
+      return await fn(req, res)
     } catch (err) {
       console.error(`[${label}] ${req.method} error:`, err.message)
       return res.status(500).json({ error: true, message: 'Internal error' })
