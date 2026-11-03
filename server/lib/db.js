@@ -13,16 +13,24 @@ const INDEX_KEY_SPECS_CONFLICT = 86
 // The connection is cached at module level so warm serverless invocations reuse it.
 let dbPromise
 
-// Create a TTL index on `field`, or change the expiry of the existing one when the retention changed.
+const INDEX_NOT_FOUND = 27
+
+// Create a TTL index on `field`, or replace the existing one when the retention changed.
+// The index is dropped and recreated rather than changed with collMod: collMod needs the
+// dbAdmin role, which the usual Atlas readWrite database user does not have.
 async function ensureTtlIndex (db, name, field) {
+  const collection = db.collection(name)
+  const key = { [field]: 1 }
+  const options = { expireAfterSeconds: MAX_AGE_SECONDS }
   try {
-    await db.collection(name).createIndex({ [field]: 1 }, { expireAfterSeconds: MAX_AGE_SECONDS })
+    await collection.createIndex(key, options)
   } catch (err) {
     if (err.code !== INDEX_OPTIONS_CONFLICT && err.code !== INDEX_KEY_SPECS_CONFLICT) throw err
-    await db.command({
-      collMod: name,
-      index: { keyPattern: { [field]: 1 }, expireAfterSeconds: MAX_AGE_SECONDS }
+    // Another cold start may have dropped it already
+    await collection.dropIndex(`${field}_1`).catch(dropErr => {
+      if (dropErr.code !== INDEX_NOT_FOUND) throw dropErr
     })
+    await collection.createIndex(key, options)
   }
 }
 
@@ -34,8 +42,10 @@ async function ensureTtlIndex (db, name, field) {
 //   vtables: a table expires MAX_AGE_DAYS after its data last changed
 // TTL only applies to BSON Date fields, which is what the lib/ modules write.
 // The frontend welcome text (App.vue) states this period: keep both in sync.
+// Indexes tidy up and speed up the data but the routes work without them, so a failure here
+// is logged instead of failing every request that needs the database.
 async function ensureIndexes (db) {
-  await Promise.all([
+  const results = await Promise.allSettled([
     db.collection('dices').createIndex({ vtable: 1, timestamp: -1 }),
     db.collection('sheets').createIndex({ vtable: 1, name: 1 }, { unique: true }),
     db.collection('vtables').createIndex({ id: 1 }, { unique: true }),
@@ -43,6 +53,9 @@ async function ensureIndexes (db) {
     ensureTtlIndex(db, 'sheets', 'updated'),
     ensureTtlIndex(db, 'vtables', 'updated')
   ])
+  results
+    .filter(result => result.status === 'rejected')
+    .forEach(result => console.error('[db] index setup failed:', result.reason.message))
 }
 
 function getDb () {
