@@ -101,6 +101,9 @@ const STATS = [
   { key: 'wil', label: 'WIL' }
 ]
 
+// Edits (typing in a field, +/- clicks) are sent to the server once they pause for this long
+const SYNC_DELAY_MS = 500
+
 const newDraft = () => ({ name: '', description: '', attacks: '', notes: '', hp: null, str: null, dex: null, wil: null, armour: 0 })
 
 const createEnemy = ({ name, description = '', attacks = '', notes = [], hp, str, dex, wil, armour = 0 }) => ({
@@ -122,17 +125,25 @@ export default {
     return {
       ENEMY_TYPES,
       STATS,
+      applyingRemote: false,
       draft: newDraft(),
       editingId: null,
       enemies: loadEnemies(),
-      selectedType: ''
+      selectedType: '',
+      syncTimer: null
     }
   },
   watch: {
     enemies: {
       deep: true,
-      handler: saveEnemies
+      handler (enemies) {
+        saveEnemies(enemies)
+        if (!this.applyingRemote) this.syncSoon()
+      }
     }
+  },
+  beforeUnmount () {
+    clearTimeout(this.syncTimer)
   },
   methods: {
     addCustomEnemy () {
@@ -166,6 +177,26 @@ export default {
     removeEnemy (id) {
       if (this.editingId === id) this.editingId = null
       this.enemies = this.enemies.filter(enemy => enemy.id !== id)
+    },
+    // Replace the encounter with the one stored on the server. When the server has none yet
+    // (first use, or a table saved before encounters were persisted), upload the local one instead.
+    restore (enemies) {
+      if (!Array.isArray(enemies)) return this.sync()
+      this.applyingRemote = true
+      this.enemies = JSON.parse(JSON.stringify(enemies))
+      this.$nextTick(() => { this.applyingRemote = false })
+    },
+    serialize () {
+      return JSON.parse(JSON.stringify(this.enemies))
+    },
+    sync () {
+      clearTimeout(this.syncTimer)
+      return this.$store.dispatch('vtable/update', { data: { enemies: this.serialize() } })
+        .catch(error => console.warn('[encounter] sync failed:', error.message))
+    },
+    syncSoon () {
+      clearTimeout(this.syncTimer)
+      this.syncTimer = setTimeout(this.sync, SYNC_DELAY_MS)
     }
   }
 }

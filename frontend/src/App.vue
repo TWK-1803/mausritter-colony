@@ -135,7 +135,7 @@
             </template>
 
             <template #content>
-              <encounter />
+              <encounter ref="encounter" />
             </template>
           </accordion>
 
@@ -291,7 +291,10 @@ export default {
       setTimeout(() => { this[loadingFlag] = false }, MIN_LOADING_MS)
     },
     serialize () {
-      return { turns: this.$refs['turn-tracker'].serialize() }
+      return {
+        turns: this.$refs['turn-tracker'].serialize(),
+        enemies: this.$refs.encounter.serialize()
+      }
     },
     toggleTheme () {
       this.theme = this.theme === THEME_DARK ? THEME_LIGHT : THEME_DARK
@@ -319,8 +322,10 @@ export default {
       if (current === false) {
         await this.$store.dispatch('vtable/create', { tableId: this.vtable, data: this.serialize() })
       } else if (current) {
-        this.$refs['turn-tracker'].set(current)
+        // Tables saved before encounters existed stored the turns without the `turns` wrapper
+        this.$refs['turn-tracker'].set(current.turns || current)
       }
+      this.$refs.encounter.restore(current?.enemies)
     } catch (error) {
       console.warn('[app] backend unavailable, running offline:', error.message)
     }

@@ -44,11 +44,11 @@ export default {
       const watch = this[watchName].map(row => [...row])
       watch[y][x] = watch[y][x] >= TURN_TRACKER_LAST ? 0 : watch[y][x] + 1
       this[watchName] = watch
-      this.$store.dispatch('vtable/update', { data: this.serialize() })
+      this.$store.dispatch('vtable/update', { data: { turns: this.serialize() } })
     },
     onClear (watchName) {
       this[watchName] = newWatch()
-      this.$store.dispatch('vtable/update', { data: this.serialize() })
+      this.$store.dispatch('vtable/update', { data: { turns: this.serialize() } })
     },
     serialize () {
       return {
