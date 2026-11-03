@@ -13,7 +13,12 @@ router.get('/', handle('vtables', async (req, res) => {
 router.post('/', handle('vtables', async (req, res) => {
   if (!requireParams(req, res, 'vtable')) return
 
-  const { data = '' } = req.body || {}
+  let data
+  try {
+    data = vtables.parseData((req.body || {}).data)
+  } catch {
+    return res.status(400).json({ error: true, message: 'data must be a JSON object' })
+  }
 
   await vtables.save(req.query.vtable, data)
   res.json({ error: false, message: 'OK', data })
