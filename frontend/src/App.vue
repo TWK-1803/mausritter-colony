@@ -41,7 +41,7 @@
 
                   <div class="notification background-white-50">
                     <p>Mausritter-Colony is a very simple tool that will help you, the GM, to manage a Mausritter adventure. Dice rolls older than a month, and tables and mice not updated for a month, will be deleted.</p>
-                    <p class="has-text-weight-bold">Mausritter-Colony is not a virtual tabletop. You will have to manually refresh the mice list and the dices history.</p>
+                    <p class="has-text-weight-bold">Mausritter-Colony is not a virtual tabletop. You will have to manually refresh the mice list and the dice history.</p>
 
                     <div class="mt-2">
                       <hr>

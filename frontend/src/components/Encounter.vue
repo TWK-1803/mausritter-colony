@@ -101,7 +101,6 @@ const STATS = [
   { key: 'wil', label: 'WIL' }
 ]
 
-// Edits (typing in a field, +/- clicks) are sent to the server once they pause for this long
 const SYNC_DELAY_MS = 500
 
 const newDraft = () => ({ name: '', description: '', attacks: '', notes: '', hp: null, str: null, dex: null, wil: null, armour: 0 })

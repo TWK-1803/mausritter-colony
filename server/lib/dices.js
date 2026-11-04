@@ -4,7 +4,6 @@ const db = require('./db')
 
 const COLLECTION = 'dices'
 
-/** All dice rolls of a virtual table, newest first. */
 async function getAll (vtable) {
   const rows = await db.collection(COLLECTION)
   return rows.find({ vtable }, { projection: { _id: 0 } }).sort({ timestamp: -1 }).toArray()

@@ -34,16 +34,10 @@ async function ensureTtlIndex (db, name, field) {
   }
 }
 
-// Data is purged by MongoDB itself through TTL indexes: a serverless function has no
-// long-running process to run a purge timer, and the database deletes expired documents
-// (checked about once a minute) whether or not the server is awake.
-//   dices:   a roll expires MAX_AGE_DAYS after it was made
-//   sheets:  a sheet expires MAX_AGE_DAYS after it was last saved
-//   vtables: a table expires MAX_AGE_DAYS after its data last changed
-// TTL only applies to BSON Date fields, which is what the lib/ modules write.
-// The frontend welcome text (App.vue) states this period: keep both in sync.
-// Indexes tidy up and speed up the data but the routes work without them, so a failure here
-// is logged instead of failing every request that needs the database.
+// Data is purged by MongoDB itself: Vercel deployment runs serverless and non-persistent so cannot be done in server code
+// dices:   a roll expires MAX_AGE_DAYS after it was made
+// sheets:  a sheet expires MAX_AGE_DAYS after it was last saved
+// vtables: a table expires MAX_AGE_DAYS after its data last changed
 async function ensureIndexes (db) {
   const results = await Promise.allSettled([
     db.collection('dices').createIndex({ vtable: 1, timestamp: -1 }),
@@ -78,7 +72,6 @@ function getDb () {
   return dbPromise
 }
 
-/** Get a MongoDB collection by name. */
 async function collection (name) {
   return (await getDb()).collection(name)
 }

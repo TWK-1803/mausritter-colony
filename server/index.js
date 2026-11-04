@@ -34,7 +34,7 @@ app.use((err, _req, res, next) => {
   return next(err)
 })
 
-// Vercel imports the exported app; only listen when started directly (npm start / npm run dev).
+// Vercel imports the exported app and runs the api as serverless, on demand functions; only listen when started directly (npm start / npm run dev).
 if (require.main === module) {
   app.listen(PORT, HOST, () => {
     console.log(`Mausritter Colony server listening on http://${HOST}:${PORT}`)
