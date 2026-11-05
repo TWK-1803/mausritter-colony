@@ -35,15 +35,17 @@ async function ensureTtlIndex (db, name, field) {
 }
 
 // Data is purged by MongoDB itself: Vercel deployment runs serverless and non-persistent so cannot be done in server code
-// dices:   a roll expires MAX_AGE_DAYS after it was made
+// dices:   rolls expire MAX_AGE_DAYS after they were last updated
 // sheets:  a sheet expires MAX_AGE_DAYS after it was last saved
 // vtables: a table expires MAX_AGE_DAYS after its data last changed
 async function ensureIndexes (db) {
+
+
   const results = await Promise.allSettled([
-    db.collection('dices').createIndex({ vtable: 1, timestamp: -1 }),
+    db.collection('dices').createIndex({ vtable: 1, sheet: 1 }, { unique: true }),
     db.collection('sheets').createIndex({ vtable: 1, name: 1 }, { unique: true }),
     db.collection('vtables').createIndex({ id: 1 }, { unique: true }),
-    ensureTtlIndex(db, 'dices', 'timestamp'),
+    ensureTtlIndex(db, 'dices', 'updated'),
     ensureTtlIndex(db, 'sheets', 'updated'),
     ensureTtlIndex(db, 'vtables', 'updated')
   ])

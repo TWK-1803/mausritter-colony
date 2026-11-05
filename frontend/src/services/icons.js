@@ -32,6 +32,10 @@ import square from '@iconify-icons/openmoji/white-large-square'
 import success from '@iconify-icons/openmoji/check-mark'
 import sun from '@iconify-icons/mdi/white-balance-sunny'
 import trash from '@iconify-icons/openmoji/delete'
+const pawsLight = {
+  ...paws,
+  body: paws.body.replace('fill="#3f3f3f"', 'fill="#f3f3f3"')
+}
 
 export default {
   'arrow-right': arrowRight,
@@ -61,6 +65,7 @@ export default {
   'mouse-face': mouseFace,
   moon,
   paws,
+  'paws-light': pawsLight,
   refresh,
   square,
   success,

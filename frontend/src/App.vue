@@ -80,12 +80,7 @@
             </template>
 
             <template #content>
-              <div class="m-1">
-                <div v-show="showNotifications" class="notification is-info is-light">
-                  <button class="delete" @click="showNotifications = false" />
-                  {{ vtable }} is now copied to clipboard.
-                </div>
-
+              <div class="m-1"> 
                 <div>
                   <tracker ref="turn-tracker" />
                 </div>
@@ -101,7 +96,8 @@
                         A turn using lighting with a torch or a lantern.
                       </p>
                       <p class="is-align-items-center is-flex">
-                        <mc-icon icon="paws" height="20" class="mr-1" />
+                        <mc-icon icon="paws" height="20" class="mr-1 turn-icon-paws-dark" />
+                        <mc-icon icon="paws-light" height="20" class="mr-1 turn-icon-paws-light" />
                         A turn walking.
                       </p>
                       <p class="is-align-items-center is-flex">
@@ -329,6 +325,8 @@ export default {
     } catch (error) {
       console.warn('[app] backend unavailable, running offline:', error.message)
     }
+    this.refreshHistory()
+    this.refreshMice()
   }
 }
 </script>

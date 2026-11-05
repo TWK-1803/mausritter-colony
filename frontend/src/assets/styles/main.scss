@@ -81,6 +81,10 @@ html, body {
   background-color: rgba(255, 255, 255, 0.5);
 }
 
+.turn-icon-paws-light {
+  display: none !important;
+}
+
 // Dark mode (Bulma 1.x handles its own components through data-theme)
 [data-theme="dark"] {
   .application-background {
@@ -101,6 +105,14 @@ html, body {
 
   .box .has-text-black {
     color: inherit !important;
+  }
+
+  .turn-icon-paws-dark {
+    display: none !important;
+  }
+
+  .turn-icon-paws-light {
+    display: inline-block !important;
   }
 }
 
