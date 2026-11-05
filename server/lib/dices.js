@@ -46,7 +46,7 @@ async function getAll (vtable) {
     }
   }
 
-  return allRolls.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+  return allRolls.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
 }
 
 async function add (vtable, sheet, json) {

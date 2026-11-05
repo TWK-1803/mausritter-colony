@@ -30,7 +30,7 @@ export default {
     setList (state, data) {
       state.list = (Array.isArray(data) ? data : []).flatMap(line => {
         try {
-          return [{ ...line, _date: new Date(line.timestamp), _json: JSON.parse(line.json) }]
+          return [{ ...line, _date: new Date(line.timestamp), _json: typeof line.json === 'string' ? JSON.parse(line.json) : line.json }]
         } catch (error) {
           console.error('[history] json parse error:', error)
           return []
